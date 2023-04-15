@@ -1,0 +1,45 @@
+---
+# Playbook name and description
+- name: Ping Test
+
+# Hosts and connection settings
+  hosts: ansible_practice_group
+  vars_files:
+    - ./group_vars/all_groups_vars.yml
+
+# Tasks section
+  tasks:
+    - name: Ping Test
+      # Use the ping module to perform a ping test
+      ansible.builtin.ping:
+
+    - name: Create a file whit module file
+      # Use the file module builted in
+      ansible.builtin.file:
+        path: /home/ansible_controller/hello-from-playbook.txt
+        state: touch
+    
+    - name: Create file using modile command
+      # Use the module builded int command
+      ansible.builtin.command:
+        chdir: /home/ansible_controller/
+        cmd: touch hello-from-playbook2.txt
+
+    - name: Install apache
+      # Set become=true to use elevated privileges
+      become: true
+      become_method: sudo
+      # Use apt module
+      ansible.builtin.apt:
+        name: apache2
+        # Equivalent to run apt-get update before install the package
+        update_cache: true
+
+    - name: Install jq vim and python
+      become: true
+      become_method: sudo
+      # Use apt module
+      ansible.builtin.apt:
+        # Indicates the name importing from a list and using a loop
+        name: "{{ item }}"
+      loop: "{{ packages }}"
